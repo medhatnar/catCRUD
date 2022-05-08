@@ -1,11 +1,6 @@
 module.exports = {
-  HOST: process.env.HOST,
-  USER: process.env.USER,
-  PASSWORD: process.env.PASSWORD,
-  DB: "catabase",
-  dialect: "mysql",
-  pool: {
-    acquire: 30000,
-    idle: 10000,
-  },
+  HOST: "localhost",
+  USER: "root",
+  PASSWORD: "12345",
+  DB: "catabase"
 };

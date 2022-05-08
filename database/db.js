@@ -1,10 +1,10 @@
 const Sequelize = require("sequelize");
 const models = require("./models");
+const config = require("./db.config.js");
 
-const db = new Sequelize("catabase", "admin", "obUyPuF3ddB8B8Hp1gfm", {
-  dialect: "mysql",
-  host: "catabase-1.cgocc8slqpnw.us-east-1.rds.amazonaws.com",
-  port: 3306,
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'uploads/database.sqlite'
 });
 
 models(db);
