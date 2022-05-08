@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cat CRUD</title>
+
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Codecatemy Upload</h1>
+      <form id="upload-form" method="post" action="http://localhost:3000/cats" enctype='multipart/form-data'>
+        <div class="input-group">
+          <label for="name">Cat Name</label>
+          <input name="name" id="name" placeholder="Enter this cat's name" />
+        </div>
+        <div class="input-group">
+          <label for="pic">Select cat pics</label>
+          <input id="pic" type="file" name="pic" />
+        </div>
+        <button class="submit-btn" type="submit">Upload</button>
+      </form>
+      <br />
+      <form id="find-form">
+        <div class="input-group">
+          <label for="name">Search:</label>
+          <input name="name" id="name" type="text" placeholder="Enter cat name or ID"/>
+        </div>
+      </form>
+      <div class="cats-container"></div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
