@@ -37,6 +37,7 @@ module.exports = (db) => {
     expires_at: {
       type: DataTypes.DATE,
       allowNull: false,
+      unique: true
     },
   });
 
