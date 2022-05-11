@@ -1,4 +1,3 @@
-const session = require("express-session");
 const {
   Create,
   Login,
@@ -12,10 +11,14 @@ const User = db.models.user;
 jest.mock("../controllers/sessionController", () => ({
   attachSession: jest
     .fn()
-    .mockImplementation(() => "You have called a mocked method 1!"),
+    .mockImplementation(
+      () => "session in database and has been associated to user"
+    ),
   destroySession: jest
     .fn()
-    .mockImplementation(() => "You have called a mocked method 2!"),
+    .mockImplementation(
+      () => "session removed from database and dissociated from user"
+    ),
 }));
 
 describe(
@@ -59,7 +62,7 @@ describe("Login", () => {
     const password = "password";
     const username = "username123";
     const user = await Create({ username, password });
-    const session = { cookie: { _expires: "2022-05-12T00:04:53.687Z" } };
+    const session = { cookie: { _expires: "some timestamp" } };
 
     const result = await Login({
       username: user.username,
@@ -68,32 +71,70 @@ describe("Login", () => {
     });
 
     expect(sessionController.attachSession).toHaveBeenCalled();
-    expect(result.message).toBe(`${user.username} is now logged in`);
+    expect(result.message).toBe(`${user.username} is now logged in.`);
+    expect(result.status).toBe(200);
 
     await Destroy({ id: user.id });
   }),
-    xit("throws an error if user does not exist", async () => {
+    it("throws an error if user does not exist", async () => {
       const password = "password";
-      const username = "username123";
-      const invalidUserType = "hacker";
-      const expectedError = `${invalidUserType} is an invalid user type`;
+      const username = "username321";
+      const expectedError = `User ${username} does not exist`;
+      const session = { cookie: { _expires: "some timestamp" } };
 
       try {
-        await Create({ username, password }, invalidUserType).catch((err) => {
-          expect(err).toThrow(expectedError);
+        await Login({
+          username,
+          password,
+          session,
+        }).catch((error) => {
+          const errorPayload = JSON.parse(error);
+          expect(error).toThrowError();
+          expect(errorPayload.message).toBe(expectedError);
+          expect(errorPayload.status).toBe(401);
         });
       } catch (err) {}
     }),
-    xit("throws an error if password is invalid", async () => {
+    it("throws an error if password is invalid", async () => {
       const password = "password";
       const username = "username123";
-      const invalidUserType = "hacker";
-      const expectedError = `${invalidUserType} is an invalid user type`;
+      const user = await Create({ username, password });
+      const session = { cookie: { _expires: "some timestamp" } };
 
       try {
-        await Create({ username, password }, invalidUserType).catch((err) => {
-          expect(err).toThrow(expectedError);
+        await Login({
+          username,
+          password: "incorrect password",
+          session,
+        }).catch((error) => {
+          const errorPayload = JSON.parse(error);
+          expect(error).toThrowError();
+          expect(errorPayload.message).toBe(expectedError);
+          expect(errorPayload.status).toBe(400);
         });
       } catch (err) {}
+
+      await Destroy({ id: user.id });
     });
 });
+
+describe("Logout", () =>
+  it("removes session association with user", async () => {
+    const password = "password";
+    const username = "username123";
+    const user = await Create({ username, password });
+    const session = { userId: user.id, cookie: { _expires: "some timestamp" } };
+    await Login({
+      username: user.username,
+      password,
+      session,
+    });
+
+    await Logout({
+      session,
+    });
+
+    expect(sessionController.destroySession).toHaveBeenCalled();
+
+    await Destroy({ id: user.id });
+  }));

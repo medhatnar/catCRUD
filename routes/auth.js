@@ -24,11 +24,22 @@ router.post("/register", (req, res) => {
 // login route //
 router.post("/login", async (req, res) => {
   const session = req.session;
-  const username = req.query.body.username;
-  const password = req.query.body.password;
-  res.status(200).json({ message: "Valid password" });
-  res.status(400).json({ error: "Invalid Password" });
-  res.status(401).json({ error: "User does not exist" });
+  const username = req.body.username;
+  const password = req.body.password;
+  console.log(session, 'LOGIN STUFF', username, password)
+  const attemptLogin = Login({ username, password, session });
+
+  attemptLogin
+    .then((success) => {
+      res.status(success.status).json({ message: success.message });
+    })
+    .catch((error) => {
+      const errorJSON = JSON.stringify(error, Object.getOwnPropertyNames(error))
+      console.error(errorJSON.stack);
+      res
+        .status({ status: errorJSON.status })
+        .send({ error: errorJSON.message });
+    });
 });
 
 router.get("/logout", (req, res) => {

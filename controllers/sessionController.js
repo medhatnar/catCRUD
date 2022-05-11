@@ -2,7 +2,7 @@
 const db = require("../database/db");
 const Session = db.models.session;
 
-const attachSession = ({ session, userId }) => {
+const attachSession = ({ session }) => {
   Session.create({
     user_id: userId,
     expires_at: session.cookie._expires,
@@ -11,11 +11,11 @@ const attachSession = ({ session, userId }) => {
   return session;
 };
 
-const destroySession = ({ session, userId }) => {
+const destroySession = ({ session }) => {
   session.destroy();
   Session.destroy({
     where: {
-      user_id: userId,
+      user_id: session.userId,
     },
   });
 };

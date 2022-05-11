@@ -1,9 +1,6 @@
 // Modules //
 const bcrypt = require("bcrypt");
-const {
-  attachSession,
-  destroySession,
-} = require("./sessionController");
+const { attachSession, destroySession } = require("./sessionController");
 const db = require("../database/db");
 const User = db.models.user;
 
@@ -26,29 +23,38 @@ const Create = async ({ username, password }, type = "member") => {
   return user;
 };
 
-const Login = async ({username, password, session}) => {
+const Login = async ({ username, password, session }) => {
   const user = await User.findOne({
     where: { username },
   });
+  console.log(username, password, session)
   if (user) {
     // check user password with hashed password stored in the database
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
       await attachSession(session, user.id);
-      return { message: `${user.username} is now logged in` };
+      return { status: 200, message: `${user.username} is now logged in.` };
     } else {
-      res.status(400).json({ error: "Invalid Password" });
+      const invalidPassword = new Error({
+        message: "Invalid Password",
+        status: 400,
+      });
+      throw invalidPassword;
     }
   } else {
-    res.status(401).json({ error: "User does not exist" });
+    const userDoesNotExist = new Error({
+      message: `User ${username} does not exist`,
+      status: 401,
+    });
+    throw userDoesNotExist;
   }
 };
 
-const Logout = async (session, userId) => {
+const Logout = async ({session}) => {
   const user = await User.findOne({
-    where: { username: body.username },
+    where: { id: session.userId },
   });
-  destroySession(req.session, req.session.user_id);
+  destroySession(session, user.id);
 };
 
 const Destroy = async ({ id }) => {
