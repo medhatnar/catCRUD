@@ -23,18 +23,27 @@ app.use(cookieParser());
 app.use(
   session({
     secret: "737710n73cr3t",
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: oneDayInMM },
-    resave: false,
+    name:'userId',
+    resave: false
   })
 );
+app.use('/verify', function(req, res, next){
+  console.log("Authenticate and Redirect")
+  res.redirect('/user');
+  next();
+});
 app.use("/auth", authRoutes);
 app.use("/api", catRoutes);
 
 // Main page //
 
-app.get("/", (_, res) => {
-  res.sendFile("./client/index.html", { root: __dirname });
+app.get("/", (req, res) => {
+  // is there a session? 
+  res.redirect('/cats/users/:id')
+
+  // res.redirect('/cats')
 });
 
 // Listeners //

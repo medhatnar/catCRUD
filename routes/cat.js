@@ -1,6 +1,9 @@
+// Modules //
 const express = require("express");
-const db = require("../database/db");
 const multer = require("multer");
+const catController = require("../controllers/catController");
+
+// Initializations //
 const router = express.Router();
 
 const multerStorage = multer.diskStorage({
@@ -12,35 +15,54 @@ const multerStorage = multer.diskStorage({
     cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
   },
 });
+// use call back for multer for validation
 const upload = multer({
   storage: multerStorage,
 });
 
 // Cat API //
-
-router.post("/cats", upload.single("pic"), async (req, res) => {
+router.post("/cats", upload.single("media"), async (req, res) => {
   const session = req.session;
   const catName = req.body.name;
   const picPath = req.file.path;
 
-  const cat = await db.models.cat.create({
-    name: catName,
-    media: picPath,
-    user_id: session.user_id,
-  });
+  catController.Create({ session, catName, picPath });
 
-  res.send({ catName: cat.name, pic: cat.media, user: cat.user_id });
+  res.send({ catName: cat.name, media: cat.media, user: cat.userId });
 });
 
-router.get("/cats", async (req, res) => {
-  const cats = await db.models.cat.findAll();
+router.get("/cats", async (_, res) => {
+  const allCats = catController.Get();
+  res.send(allCats);
+});
+
+router.get("/cats/users/:id", async (req, res) => {
+  const userId = req.body.userId;
+  catController.GetUsersCats({ session, catName, userId });
   res.send(cats);
 });
 
-router.get("/cats/:id", () => {});
+router.get("/cats/:id", async (req, res) => {
+  // check session to see session-user exists in this cat's listing
+  const id = req.params.id;
+  catController.GetOne({ id });
+  res.send(cat);
+});
 
-router.put("/cats/:id", () => {});
+router.put("/cats/:id", upload.single("media"), async (req, res) => {
+  const params = req.params;
+  const picPath = req.file.path;
+  const body = req.body;
 
-router.delete("/cats/:id", () => {});
+  catController.Update({ session, catName, picPath });
+
+  res.send(updatedCat);
+});
+
+router.delete("/cats/:id", async (req, res) => {
+  const id = req.params.id;
+  catController.Delete({ session, catName, picPath });
+  res.send(updatedCat);
+});
 
 module.exports = router;

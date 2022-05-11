@@ -6,10 +6,12 @@
   "author": "Nar Shahin",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test": "jest"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -21,6 +23,7 @@
     "sqlite3": "^5.0.8"
   },
   "devDependencies": {
+    "jest": "^28.1.0",
     "nodemon": "^2.0.16"
   }
 }

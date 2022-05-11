@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 
 module.exports = (db) => {
   const User = db.define("user", {
@@ -19,31 +19,32 @@ module.exports = (db) => {
   const Cat = db.define("cat", {
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     media: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
+      allowNull: false,
     },
   });
 
   const Session = db.define("session", {
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false,
     },
     expires_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      unique: true
     },
   });
 
   return {
     User,
     Cat,
-    Session
-  }
+    Session,
+  };
 };
