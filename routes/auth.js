@@ -26,7 +26,7 @@ router.post("/login", async (req, res) => {
   const session = req.session;
   const username = req.body.username;
   const password = req.body.password;
-  console.log(session, 'LOGIN STUFF', username, password)
+  console.log('session', session);
   const attemptLogin = Login({ username, password, session });
 
   attemptLogin
@@ -42,8 +42,9 @@ router.post("/login", async (req, res) => {
     });
 });
 
+// logout route //
 router.get("/logout", (req, res) => {
-  destroySession(req.session, req.session.user_id);
+  Logout(req.session);
   res.redirect("/");
 });
 

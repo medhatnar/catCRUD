@@ -1,7 +1,14 @@
 // Modules //
 const express = require("express");
 const multer = require("multer");
-const catController = require("../controllers/catController");
+const {
+  Create,
+  Get,
+  GetUsersCats,
+  GetOne,
+  Update,
+  Delete,
+} = require("../controllers/catController");
 
 // Initializations //
 const router = express.Router();
@@ -26,9 +33,9 @@ router.post("/cats", upload.single("media"), async (req, res) => {
   const catName = req.body.name;
   const picPath = req.file.path;
 
-  catController.Create({ session, catName, picPath });
+  const cat = await Create({ session, catName, picPath });
 
-  res.send({ catName: cat.name, media: cat.media, user: cat.userId });
+  res.send({ name: cat.name, media: cat.media, user: cat.userId });
 });
 
 router.get("/cats", async (_, res) => {

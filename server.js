@@ -14,7 +14,7 @@ const port = 3000;
 const oneDayInMM = 86400000;
 
 // Middleware //
-db.drop();
+
 db.sync();
 app.use(cors());
 app.use(express.json());

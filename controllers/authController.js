@@ -9,6 +9,11 @@ const Create = async ({ username, password }, type = "member") => {
     throw new Error("A username and password must be provided");
   if (type !== "member" && type !== "admin")
     throw Error(`${type} is an invalid user type`);
+  const userExists = await User.findOne({
+    where: { username },
+  });
+
+  if(userExists) throw new Error(`${username} already exists. Please Login.`);
 
   const salt = await bcrypt.genSalt(10);
   // set user password to hashed password
@@ -27,12 +32,11 @@ const Login = async ({ username, password, session }) => {
   const user = await User.findOne({
     where: { username },
   });
-  console.log(username, password, session)
   if (user) {
     // check user password with hashed password stored in the database
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
-      await attachSession(session, user.id);
+      await attachSession({session, userId: user.id});
       return { status: 200, message: `${user.username} is now logged in.` };
     } else {
       const invalidPassword = new Error({
@@ -50,17 +54,17 @@ const Login = async ({ username, password, session }) => {
   }
 };
 
-const Logout = async ({session}) => {
+const Logout = async ({ session }) => {
   const user = await User.findOne({
     where: { id: session.userId },
   });
-  destroySession(session, user.id);
+  destroySession({session, userId: user.id});
 };
 
-const Destroy = async ({ id }) => {
+const Destroy = async ({ username }) => {
   const deletedUser = await User.destroy({
     where: {
-      id,
+      username,
     },
   });
 

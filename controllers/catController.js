@@ -3,11 +3,19 @@ const db = require("../database/db");
 const Cat = db.models.cat;
 
 const Create = async ({ session, catName, picPath }) => {
+  if (!session || !session.userId) {
+    return {
+      status: 401,
+      message: "You can not post Cat pics without logging in first!",
+    };
+  }
+  console.log("session", session, "catName", catName, "picPath", picPath);
   const cat = await Cat.create({
     name: catName,
     media: picPath,
-    userId: session.user_id,
+    userId: session.userId,
   });
+  return cat;
 };
 
 const Get = async () => {

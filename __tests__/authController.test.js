@@ -21,10 +21,20 @@ jest.mock("../controllers/sessionController", () => ({
     ),
 }));
 
+beforeAll(async () => {
+  return db.sync();
+});
+
+afterEach(async () => {
+  return await Destroy({ username: "username123"});
+});
+
+
+
 describe(
   "Create",
   () =>
-    it("creates a new user entity", async () => {
+    it("creates a new User entity", async () => {
       const passwordBeforeHashing = "password";
       const username = "username123";
 
@@ -54,6 +64,25 @@ describe(
         expect(err).toThrow(expectedError);
       });
     } catch (err) {}
+  }),
+
+  it("throws an error if user already exists", async () => {
+    const password = "password";
+    const username = "username123";
+    const expectedError = `${username} already exists. Please Login.`;
+
+    const userCreated = await Create({
+      username,
+      password,
+    });
+
+    try {
+      await Create({ username: userCreated.username, password }).catch(
+        (err) => {
+          expect(err).toThrow(expectedError);
+        }
+      );
+    } catch (err) {}
   })
 );
 
@@ -73,8 +102,6 @@ describe("Login", () => {
     expect(sessionController.attachSession).toHaveBeenCalled();
     expect(result.message).toBe(`${user.username} is now logged in.`);
     expect(result.status).toBe(200);
-
-    await Destroy({ id: user.id });
   }),
     it("throws an error if user does not exist", async () => {
       const password = "password";
@@ -114,7 +141,6 @@ describe("Login", () => {
         });
       } catch (err) {}
 
-      await Destroy({ id: user.id });
     });
 });
 
@@ -135,6 +161,4 @@ describe("Logout", () =>
     });
 
     expect(sessionController.destroySession).toHaveBeenCalled();
-
-    await Destroy({ id: user.id });
   }));
