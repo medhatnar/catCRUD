@@ -25,13 +25,13 @@ app.use(
     secret: "737710n73cr3t",
     saveUninitialized: false,
     cookie: { maxAge: oneDayInMM },
-    name:'userId',
-    resave: false
+    name: "userId",
+    resave: false,
   })
 );
-app.use('/verify', function(req, res, next){
-  console.log("Authenticate and Redirect")
-  res.redirect('/user');
+app.use("/verify", function (req, res, next) {
+  console.log("Authenticate and Redirect");
+  res.redirect("/user");
   next();
 });
 app.use("/auth", authRoutes);
@@ -40,8 +40,8 @@ app.use("/api", catRoutes);
 // Main page //
 
 app.get("/", (req, res) => {
-  // is there a session? 
-  res.redirect('/cats/users/:id')
+  // is there a session?
+  res.redirect("/cats/users/:id");
 
   // res.redirect('/cats')
 });

@@ -26,7 +26,8 @@ router.post("/login", async (req, res) => {
   const session = req.session;
   const username = req.query.body.username;
   const password = req.query.body.password;
-
+  res.status(200).json({ message: "Valid password" });
+  res.status(400).json({ error: "Invalid Password" });
   res.status(401).json({ error: "User does not exist" });
 });
 
