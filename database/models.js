@@ -9,11 +9,7 @@ module.exports = (db) => {
     password: {
       type: DataTypes.TEXT,
       allowNull: false,
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    }
   });
 
   const Cat = db.define("cat", {

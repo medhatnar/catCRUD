@@ -4,11 +4,10 @@ const { attachSession, destroySession } = require("./sessionController");
 const db = require("../database/db");
 const User = db.models.user;
 
-const Create = async ({ username, password }, type = "member") => {
+const Create = async ({ username, password }) => {
   if (!username || !password)
     throw new Error("A username and password must be provided");
-  if (type !== "member" && type !== "admin")
-    throw Error(`${type} is an invalid user type`);
+
   const userExists = await User.findOne({
     where: { username },
   });
@@ -22,7 +21,6 @@ const Create = async ({ username, password }, type = "member") => {
   const user = await User.create({
     username,
     password: hashedPassword,
-    type,
   });
 
   return user;
@@ -39,17 +37,11 @@ const Login = async ({ username, password, session }) => {
       await attachSession({session, userId: user.id});
       return { status: 200, message: `${user.username} is now logged in.` };
     } else {
-      const invalidPassword = new Error({
-        message: "Invalid Password",
-        status: 400,
-      });
+      const invalidPassword = new Error("400");
       throw invalidPassword;
     }
   } else {
-    const userDoesNotExist = new Error({
-      message: `User ${username} does not exist`,
-      status: 401,
-    });
+    const userDoesNotExist = new Error("401");
     throw userDoesNotExist;
   }
 };

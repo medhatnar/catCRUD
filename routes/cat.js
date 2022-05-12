@@ -30,22 +30,23 @@ const upload = multer({
 // Cat API //
 router.post("/cats", upload.single("media"), async (req, res) => {
   const session = req.session;
-  const catName = req.body.name;
+  const name = req.body.name;
   const picPath = req.file.path;
 
-  const cat = await Create({ session, catName, picPath });
-
+  const cat = await Create({ session, name, picPath });
+  "You can not post Cat pics without logging in first!"
   res.send({ name: cat.name, media: cat.media, user: cat.userId });
 });
 
 router.get("/cats", async (_, res) => {
-  const allCats = catController.Get();
-  res.send(allCats);
+  const allCats = await Get();
+  
+  res.json(allCats);
 });
 
 router.get("/cats/users/:id", async (req, res) => {
   const userId = req.body.userId;
-  catController.GetUsersCats({ session, catName, userId });
+  catController.GetUsersCats({ session, name, userId });
   res.send(cats);
 });
 
@@ -59,16 +60,16 @@ router.get("/cats/:id", async (req, res) => {
 router.put("/cats/:id", upload.single("media"), async (req, res) => {
   const params = req.params;
   const picPath = req.file.path;
-  const body = req.body;
+  const payload = req.body;
 
-  catController.Update({ session, catName, picPath });
+  catController.Update({ id, picPath, session, payload });
 
   res.send(updatedCat);
 });
 
 router.delete("/cats/:id", async (req, res) => {
   const id = req.params.id;
-  catController.Delete({ session, catName, picPath });
+  catController.Delete({ session, name, picPath });
   res.send(updatedCat);
 });
 

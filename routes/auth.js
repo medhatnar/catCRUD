@@ -6,9 +6,8 @@ const { Create, Login, Logout } = require("../controllers/authController");
 router.post("/register", (req, res) => {
   const password = req.body.password;
   const username = req.body.username;
-  const type = req.body.type;
 
-  const user = Create({ username, password }, type);
+  const user = Create({ username, password });
 
   user
     .then((result) => res.status(201).send(`${result.username} created!`))
@@ -26,19 +25,23 @@ router.post("/login", async (req, res) => {
   const session = req.session;
   const username = req.body.username;
   const password = req.body.password;
-  console.log('session', session);
+
   const attemptLogin = Login({ username, password, session });
 
   attemptLogin
     .then((success) => {
+      console.log("success", success);
       res.status(success.status).json({ message: success.message });
     })
     .catch((error) => {
-      const errorJSON = JSON.stringify(error, Object.getOwnPropertyNames(error))
-      console.error(errorJSON.stack);
-      res
-        .status({ status: errorJSON.status })
-        .send({ error: errorJSON.message });
+      const errorJSON = JSON.parse(
+        JSON.stringify(error, Object.getOwnPropertyNames(error))
+      );
+      if (errorJSON.message === "400") {
+        res.status(400).json({ message: "Invalid Password" });
+      } else if (errorJSON.message === "401") {
+        res.status(401).json({ message: `User ${username} does not exist` });
+      }
     });
 });
 

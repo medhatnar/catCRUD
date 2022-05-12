@@ -22,14 +22,16 @@ jest.mock("../controllers/sessionController", () => ({
 }));
 
 beforeAll(async () => {
-  return db.sync();
+  return await db.sync();
 });
+
+afterAll(async () => {
+  return await db.close();
+})
 
 afterEach(async () => {
   return await Destroy({ username: "username123"});
 });
-
-
 
 describe(
   "Create",
@@ -47,20 +49,17 @@ describe(
       expect(result).toEqual(
         expect.objectContaining({
           username,
-          type: "member",
           password: expect.not.stringMatching(passwordBeforeHashing),
         })
       );
     }),
 
   it("throws an error if an invalid parameter is passed in", async () => {
-    const password = "password";
     const username = "username123";
-    const invalidUserType = "hacker";
-    const expectedError = `${invalidUserType} is an invalid user type`;
+    const expectedError = "A username and password must be provided";
 
     try {
-      await Create({ username, password }, invalidUserType).catch((err) => {
+      await Create({ username, password }).catch((err) => {
         expect(err).toThrow(expectedError);
       });
     } catch (err) {}
