@@ -1,4 +1,5 @@
 // Modules //
+const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const {
@@ -37,20 +38,20 @@ router.post("/cats", upload.single("media"), (req, res) => {
 
   cat
     .then((cat) => {
-      res
-        .status(200)
-        .json({ name: cat.name, media: cat.media, user: cat.userId });
+      res.status(200).sendFile(path.resolve(cat.media));
     })
-    .catch((_) => {
+    .catch((error) => {
       res.status(401).json({
         message: "You can not post Cat pics without logging in first!",
       });
+      console.error(error);
     });
 });
 
 router.get("/cats", async (_, res) => {
   const allCats = await Get();
-
+  
+  allCats.forEach((cat) => res.write())
   res.status(200).json(allCats);
 });
 
@@ -76,11 +77,14 @@ router.get("/cats/users/:id", (req, res) => {
         res.status(404).json({
           message: "Cats not found...",
         });
+      } else {
+        console.error(error);
+        res.json(error);
       }
     });
 });
 
-router.get("/cats/:id", async (req, res) => {
+router.get("/cats/:id", (req, res) => {
   const id = req.params.id;
   const session = req.session;
 
@@ -88,9 +92,7 @@ router.get("/cats/:id", async (req, res) => {
 
   cat
     .then((cat) => {
-      res
-        .status(200)
-        .json({ id: cat.id, name: cat.name, media: cat.media, user: cat.userId });
+      res.status(200).sendFile(path.resolve(cat.media));
     })
     .catch((error) => {
       const errorJSON = JSON.parse(
@@ -104,11 +106,14 @@ router.get("/cats/:id", async (req, res) => {
         res.status(404).json({
           message: "Cat not found.",
         });
+      } else {
+        console.error(error);
+        res.json(error);
       }
     });
 });
 
-router.put("/cats/:id", upload.single("media"), async (req, res) => {
+router.put("/cats/:id", upload.single("media"), (req, res) => {
   const id = req.params.id;
   const picPath = req.file.path;
   const session = req.session;
@@ -134,6 +139,9 @@ router.put("/cats/:id", upload.single("media"), async (req, res) => {
         res.status(404).json({
           message: "Cat not found.",
         });
+      } else {
+        console.error(error);
+        res.json(error);
       }
     });
 });
@@ -145,9 +153,7 @@ router.delete("/cats/:id", async (req, res) => {
 
   deletedCat
     .then((_) => {
-      res
-        .status(200)
-        .send("Cat Deleted");
+      res.status(200).send("Cat Deleted");
     })
     .catch((error) => {
       const errorJSON = JSON.parse(
@@ -158,6 +164,7 @@ router.delete("/cats/:id", async (req, res) => {
           message: "You are NOT authorized to delete this cat.",
         });
       } else {
+        console.error(error);
         res.status(404).json({
           message: "Cat not found.",
         });

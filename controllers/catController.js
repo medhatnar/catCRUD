@@ -22,7 +22,6 @@ const Get = async () => {
 };
 
 const GetUsersCats = async ({ userId, session }) => {
-  console.log(session.userId,userId);
   if (session.userId != userId) {
     throw new Error("403");
   }
