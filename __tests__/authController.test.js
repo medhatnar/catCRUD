@@ -26,6 +26,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await db.drop();
   return await db.close();
 })
 

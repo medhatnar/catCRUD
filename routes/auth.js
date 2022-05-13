@@ -21,7 +21,7 @@ router.post("/register", (req, res) => {
 });
 
 // login route //
-router.post("/login", async (req, res) => {
+router.post("/login", (req, res) => {
   const session = req.session;
   const username = req.body.username;
   const password = req.body.password;
@@ -30,7 +30,6 @@ router.post("/login", async (req, res) => {
 
   attemptLogin
     .then((success) => {
-      console.log("success", success);
       res.status(success.status).json({ message: success.message });
     })
     .catch((error) => {
@@ -46,9 +45,11 @@ router.post("/login", async (req, res) => {
 });
 
 // logout route //
-router.get("/logout", (req, res) => {
-  Logout(req.session);
-  res.redirect("/");
+router.post("/logout", (req, res) => {
+  const session = req.session;
+
+  Logout({session});
+  res.json({ message: "You have succcessfully logged out." });
 });
 
 module.exports = router;

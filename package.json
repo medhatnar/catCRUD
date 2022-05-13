@@ -6,7 +6,8 @@
   "author": "Nar Shahin",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
+    "watch": "nodemon server.js",
     "test": "jest"
   },
   "dependencies": {

@@ -4,10 +4,7 @@ const Cat = db.models.cat;
 
 const Create = async ({ session, name, picPath }) => {
   if (!session || !session.userId) {
-    throw new Error({
-      status: 401,
-      message: "You can not post Cat pics without logging in first!",
-    });
+    throw new Error("401");
   }
 
   const cat = await Cat.create({
@@ -25,7 +22,8 @@ const Get = async () => {
 };
 
 const GetUsersCats = async ({ userId, session }) => {
-  if (session.userId !== userId) {
+  console.log(session.userId,userId);
+  if (session.userId != userId) {
     throw new Error("403");
   }
   const cats = Cat.findAll({
@@ -42,6 +40,7 @@ const GetOne = async ({ id, session }) => {
       id,
     },
   });
+
   if (cat) {
     if (session.userId !== cat.userId) {
       throw new Error("403");
@@ -49,6 +48,7 @@ const GetOne = async ({ id, session }) => {
       return cat;
     }
   } else {
+   
     throw new Error("404");
   }
 };
@@ -61,7 +61,7 @@ const Update = async ({ id, picPath, session, payload }) => {
   });
   if (cat) {
     if (session.userId !== cat.userId) {
-      throw new Error("You are NOT authorized to update this cat.");
+      throw new Error("403");
     }
     return await cat.update(
       { media: picPath, ...payload },
@@ -85,6 +85,7 @@ const Delete = async ({ id, session }) => {
   if (session.userId !== cat.userId) {
     throw new Error("403");
   }
+
   await Cat.destroy({
     where: {
       id,

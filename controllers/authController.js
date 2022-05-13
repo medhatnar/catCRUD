@@ -12,7 +12,7 @@ const Create = async ({ username, password }) => {
     where: { username },
   });
 
-  if(userExists) throw new Error(`${username} already exists. Please Login.`);
+  if (userExists) throw new Error(`${username} already exists. Please Login.`);
 
   const salt = await bcrypt.genSalt(10);
   // set user password to hashed password
@@ -34,7 +34,7 @@ const Login = async ({ username, password, session }) => {
     // check user password with hashed password stored in the database
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
-      await attachSession({session, userId: user.id});
+      await attachSession({ session, userId: user.id });
       return { status: 200, message: `${user.username} is now logged in.` };
     } else {
       const invalidPassword = new Error("400");
@@ -46,11 +46,8 @@ const Login = async ({ username, password, session }) => {
   }
 };
 
-const Logout = async ({ session }) => {
-  const user = await User.findOne({
-    where: { id: session.userId },
-  });
-  destroySession({session, userId: user.id});
+const Logout = ({ session }) => {
+  destroySession({ session });
 };
 
 const Destroy = async ({ username }) => {

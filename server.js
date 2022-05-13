@@ -14,6 +14,7 @@ const port = 3000;
 const oneDayInMM = 86400000;
 
 // Middleware //
+// db.drop();
 db.sync();
 app.use(cors());
 app.use(express.json());
@@ -35,6 +36,12 @@ app.use("/verify", function (req, res, next) {
 });
 app.use("/auth", authRoutes);
 app.use("/api", catRoutes);
+
+// Main page //
+
+app.get("/", (req, res) => {
+  res.json({message: 'Go to localhost:3000/auth/register to make an account!'})
+});
 
 // Listeners //
 app.listen(port, () => {
