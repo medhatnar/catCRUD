@@ -1,6 +1,5 @@
 // Modules //
 require("dotenv").config();
-const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -20,16 +19,17 @@ const corsOptions = {
 // Middleware //
 db.sync();
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
 app.use(cookieParser());
 app.use(
   session({
     secret: "737710n73cr3t",
     saveUninitialized: false,
     cookie: { maxAge: oneDayInMM },
-    name: "userId",
-    resave: false,
+    resave: true,
+    rolling: true,
+    name: "userId"
   })
 );
 app.use("/auth", authRoutes);

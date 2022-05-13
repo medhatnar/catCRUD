@@ -21,44 +21,49 @@ const multerStorage = multer.diskStorage({
   filename: (_, file, cb) => {
     const ext = file.mimetype.split("/")[1];
     cb(null, `${Date.now()}.${ext}`);
-  }
+  },
 });
 // use call back for multer for validation
 const upload = multer({
   storage: multerStorage,
   fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
       cb(null, true);
     } else {
       cb(null, false);
-      return new Error(' Unsupported Media Type');
+      return new Error("Unsupported Media Type");
     }
-  },
-  limits: { fileSize:  2 * 1024 * 1024 }
+  }
 });
 
 // Cat API //
 router.post("/cats", upload.single("media"), (req, res) => {
   const session = req.session;
   const name = req.body.name;
- 
-  if(!req.file) {
-    res.status(415).json({message: "Only Cat image files are allowed!"})
-  }
-  const picPath = req.file.path;
-  
-  const cat = Create({ session, name, picPath });
+  const file = req.file;
 
-  cat
-    .then((cat) => {
-      res.status(200).sendFile(path.resolve(cat.media));
-    })
-    .catch((error) => {
-      res.status(401).json({
-        message: "You can NOT post Cat pics without logging in first!",
+  if (!file) {
+    res.status(415).json({ message: "Only Cat image files are allowed!" });
+  } else {
+    const cat = Create({ session, name, picPath: file.path });
+  
+    cat
+      .then((cat) => {
+        res.status(200).sendFile(path.resolve(cat.media));
+      })
+      .catch((error) => {
+        res.status(401).json({
+          message: "You can NOT post Cat pics without logging in first!",
+        });
+        console.error(error);
       });
-      console.error(error);
-    });
+
+  }
+
 });
 
 router.get("/cats", async (_, res) => {

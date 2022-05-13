@@ -1,5 +1,5 @@
 // Modules //
-const fs = require('fs');
+const fs = require("fs");
 const path = require("path");
 const db = require("../database/db");
 const Cat = db.models.cat;
@@ -49,7 +49,6 @@ const GetOne = async ({ id, session }) => {
       return cat;
     }
   } else {
-   
     throw new Error("404");
   }
 };

@@ -28,10 +28,10 @@ beforeAll(async () => {
 afterAll(async () => {
   await User.drop();
   return await db.close();
-})
+});
 
 afterEach(async () => {
-  return await Destroy({ username: "username123"});
+  return await Destroy({ username: "username123" });
 });
 
 describe(
@@ -140,7 +140,6 @@ describe("Login", () => {
           expect(errorPayload.status).toBe(400);
         });
       } catch (err) {}
-
     });
 });
 

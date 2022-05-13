@@ -29,8 +29,9 @@ router.post("/login", (req, res) => {
   const attemptLogin = Login({ username, password, session });
 
   attemptLogin
-    .then((success) => {
-      res.status(success.status).json({ message: success.message });
+    .then((result) => {
+      res.cookie("userId", result.id);
+      res.status(result.status).json({ message: result.message });
     })
     .catch((error) => {
       const errorJSON = JSON.parse(

@@ -15,7 +15,6 @@ const Create = async ({ username, password }) => {
   if (userExists) throw new Error(`${username} already exists. Please Login.`);
 
   const salt = await bcrypt.genSalt(10);
-  // set user password to hashed password
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const user = await User.create({
@@ -31,11 +30,11 @@ const Login = async ({ username, password, session }) => {
     where: { username },
   });
   if (user) {
-    // check user password with hashed password stored in the database
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
       await attachSession({ session, userId: user.id });
-      return { status: 200, message: `${user.username} is now logged in.` };
+      console.log('SESSSION', session);
+      return { status: 200, message: `${user.username} is now logged in.`, user };
     } else {
       const invalidPassword = new Error("400");
       throw invalidPassword;
