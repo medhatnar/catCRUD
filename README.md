@@ -36,7 +36,7 @@ or
 
 Bonus: Get cats that belong to a specific user, ONLY if that user is signed in.
 
-**GET /cats/users/:id**
+`GET /cats/users/:id`
 
 #### Authentication:
 `POST /register`
@@ -47,16 +47,10 @@ Bonus: Get cats that belong to a specific user, ONLY if that user is signed in.
 
 ## Usage
 
+Since sessions are used for authentication, please utilize Postman.
+
 1.  `curl -X POST -H "Content-Type: application/json" -d '{"username": "narsha", "password": "password"}' localhost:3000/auth/login`
 
-    Makes an element on your page blink at a given interval in ms.
-
-    ```
-    el = getElementbyId("not-blinking")
-    makeBlink(el, 300)
-    ```
-
-    ![gif of make blink](./assets/makeBlink.gif)
 
 ## Created by
 
