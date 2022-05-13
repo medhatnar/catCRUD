@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 const {
   Create,
   Get,
@@ -21,7 +21,8 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  return await User.destroy({
+  await Cat.destroy({ where: { name: "Fluffy" } });
+  await User.destroy({
     where: {
       username: "username",
     },
@@ -104,7 +105,7 @@ describe("Get", () =>
 describe(
   "GetUsersCats",
   () =>
-    it("fetches all Cat pics uplaoded by the given User", async () => {
+    it("fetches all Cat pics uploaded by the given User", async () => {
       const user = await User.create({
         username: "username",
         password: "password",
@@ -225,7 +226,7 @@ describe("Update", () =>
     const name = "Fluffy";
     const picPath = "media.png";
 
-    fs.writeFileSync(picPath, 'I am a cat picture!');
+    fs.writeFileSync(picPath, "I am a cat picture!");
     const cat = await Cat.create({
       name,
       media: picPath,
@@ -257,7 +258,7 @@ describe("Delete", () =>
     };
     const name = "Fluffy";
     const picPath = "media.png";
-    fs.writeFileSync(picPath, 'I am a cat picture!');
+    fs.writeFileSync(picPath, "I am a cat picture!");
     const cat = await Cat.create({
       name,
       media: picPath,
@@ -265,7 +266,6 @@ describe("Delete", () =>
     });
 
     const result = await Delete({ id: cat.id, session });
-
 
     expect(result).toBeInstanceOf(Cat);
     expect(fs.existsSync(picPath)).toBeFalsy();

@@ -21,20 +21,32 @@ const multerStorage = multer.diskStorage({
   filename: (_, file, cb) => {
     const ext = file.mimetype.split("/")[1];
     cb(null, `${Date.now()}.${ext}`);
-  },
-  limits: { fileSize:  2 * 1024 * 1024 }
+  }
 });
 // use call back for multer for validation
 const upload = multer({
   storage: multerStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return new Error(' Unsupported Media Type');
+    }
+  },
+  limits: { fileSize:  2 * 1024 * 1024 }
 });
 
 // Cat API //
 router.post("/cats", upload.single("media"), (req, res) => {
   const session = req.session;
   const name = req.body.name;
+ 
+  if(!req.file) {
+    res.status(415).json({message: "Only Cat image files are allowed!"})
+  }
   const picPath = req.file.path;
-
+  
   const cat = Create({ session, name, picPath });
 
   cat
