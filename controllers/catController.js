@@ -1,4 +1,6 @@
 // Modules //
+const fs = require('fs');
+const path = require("path");
 const db = require("../database/db");
 const Cat = db.models.cat;
 
@@ -58,10 +60,12 @@ const Update = async ({ id, picPath, session, payload }) => {
       id,
     },
   });
+
   if (cat) {
     if (session.userId !== cat.userId) {
       throw new Error("403");
     }
+    fs.rmSync(path.resolve(cat.media));
     return await cat.update(
       { media: picPath, ...payload },
       {
@@ -84,7 +88,7 @@ const Delete = async ({ id, session }) => {
   if (session.userId !== cat.userId) {
     throw new Error("403");
   }
-
+  fs.rmSync(path.resolve(cat.media));
   await Cat.destroy({
     where: {
       id,

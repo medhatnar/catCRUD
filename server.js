@@ -1,5 +1,6 @@
 // Modules //
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -8,14 +9,17 @@ const authRoutes = require("./routes/auth");
 const catRoutes = require("./routes/cat");
 const cookieParser = require("cookie-parser");
 
-// Initializations //
+// Initializations //;
 const app = express();
 const port = 3000;
 const oneDayInMM = 86400000;
+const corsOptions = {
+  origin: "http://localhost:3000"
+};
 
 // Middleware //
 db.sync();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -30,12 +34,6 @@ app.use(
 );
 app.use("/auth", authRoutes);
 app.use("/api", catRoutes);
-
-// Main page //
-
-app.get("/", (req, res) => {
-  res.json({message: 'Go to localhost:3000/auth/register to make an account!'})
-});
 
 // Listeners //
 app.listen(port, () => {

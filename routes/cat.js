@@ -20,8 +20,9 @@ const multerStorage = multer.diskStorage({
   },
   filename: (_, file, cb) => {
     const ext = file.mimetype.split("/")[1];
-    cb(null, `${file.fieldname}-${Date.now()}.${ext}`);
+    cb(null, `${Date.now()}.${ext}`);
   },
+  limits: { fileSize:  2 * 1024 * 1024 }
 });
 // use call back for multer for validation
 const upload = multer({
@@ -42,7 +43,7 @@ router.post("/cats", upload.single("media"), (req, res) => {
     })
     .catch((error) => {
       res.status(401).json({
-        message: "You can not post Cat pics without logging in first!",
+        message: "You can NOT post Cat pics without logging in first!",
       });
       console.error(error);
     });
@@ -50,8 +51,6 @@ router.post("/cats", upload.single("media"), (req, res) => {
 
 router.get("/cats", async (_, res) => {
   const allCats = await Get();
-  
-  allCats.forEach((cat) => res.write())
   res.status(200).json(allCats);
 });
 

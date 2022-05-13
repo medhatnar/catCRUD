@@ -1,3 +1,4 @@
+const fs = require('fs');
 const {
   Create,
   Get,
@@ -15,7 +16,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await db.drop();
+  await Cat.drop();
   return await db.close();
 });
 
@@ -143,7 +144,6 @@ describe(
       cookie: { _expires: "some timestamp" },
     };
     const expectedError = "403";
-    // const expectedError = "You are NOT authorized to see these cats.";
 
     try {
       await GetUsersCats({ userId: user.id, session }).catch((err) => {
@@ -202,7 +202,6 @@ describe(
       userId: user.id,
     });
     const expectedError = "403";
-    // const expectedError = "You are NOT authorized to see these cats.";
 
     try {
       await GetOne({ id: cat.id, session }).catch((err) => {
@@ -224,12 +223,15 @@ describe("Update", () =>
       cookie: { _expires: "some timestamp" },
     };
     const name = "Fluffy";
-    const picPath = "path/to/cat/media.png";
+    const picPath = "media.png";
+
+    fs.writeFileSync(picPath, 'I am a cat picture!');
     const cat = await Cat.create({
       name,
       media: picPath,
       userId: session.userId,
     });
+
     const payload = { name: "new name who dis?" };
 
     const result = await Update({ id: cat.id, picPath, session, payload });
@@ -254,7 +256,8 @@ describe("Delete", () =>
       cookie: { _expires: "some timestamp" },
     };
     const name = "Fluffy";
-    const picPath = "path/to/cat/media.png";
+    const picPath = "media.png";
+    fs.writeFileSync(picPath, 'I am a cat picture!');
     const cat = await Cat.create({
       name,
       media: picPath,
@@ -263,5 +266,7 @@ describe("Delete", () =>
 
     const result = await Delete({ id: cat.id, session });
 
+
     expect(result).toBeInstanceOf(Cat);
+    expect(fs.existsSync(picPath)).toBeFalsy();
   }));
