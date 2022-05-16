@@ -26,8 +26,26 @@ module.exports = (db) => {
       allowNull: false,
     },
   });
+
+  const Session = db.define("Session", {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    expires_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  });
+  
   return {
     User,
     Cat,
+    Session,
   };
 };

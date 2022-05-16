@@ -17,6 +17,7 @@ const corsOptions = {
 };
 
 // Middleware //
+db.drop();
 db.sync();
 app.use(cors(corsOptions));
 app.use(express.json({limit: '50mb'}));
