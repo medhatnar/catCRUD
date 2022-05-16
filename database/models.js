@@ -27,12 +27,7 @@ module.exports = (db) => {
     },
   });
 
-  const Session = db.define("Session", {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-    },
+  const Session = db.define("session", {
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,
