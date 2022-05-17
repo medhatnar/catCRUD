@@ -87,6 +87,10 @@ example:
 
 `curl -v -X GET  localhost:3000/api/cats/users/1 -b cookies.txt`
 
+## Test
+
+`yarn test`
+
 ## Created by
 
 <table>
