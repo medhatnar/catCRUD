@@ -16,7 +16,7 @@ cd codecademy
 **Yarn**:
 `yarn`
 
-### Get API started
+## Get API started
 `npm start`
 or
 `yarn start`
