@@ -25,16 +25,16 @@ const Create = async ({ username, password }) => {
   return user;
 };
 
-const Login = async ({ username, password, session }) => {
+const Login = async ({ session, username, password }) => {
   const user = await User.findOne({
     where: { username },
   });
+
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
       await attachSession({ session, userId: user.id });
-      console.log('SESSSION', session);
-      return { status: 200, message: `${user.username} is now logged in.`, user };
+      return { status: 200, message: `${user.username} is now logged in.` };
     } else {
       const invalidPassword = new Error("400");
       throw invalidPassword;

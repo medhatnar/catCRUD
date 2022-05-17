@@ -1,21 +1,22 @@
 // Modules //
 const fs = require("fs");
 const path = require("path");
+const { checkSession } = require("./sessionController");
 const db = require("../database/db");
 const Cat = db.models.cat;
 
 const Create = async ({ session, name, picPath }) => {
-  if (!session || !session.userId) {
-    throw new Error("401");
+  const validSession = checkSession({ session });
+  if (validSession) {
+    const cat = await Cat.create({
+      name,
+      media: picPath,
+      userId: session.userId,
+    });
+    return cat;
+  } else {
+    throw new Error();
   }
-
-  const cat = await Cat.create({
-    name,
-    media: picPath,
-    userId: session.userId,
-  });
-
-  return cat;
 };
 
 const Get = async () => {

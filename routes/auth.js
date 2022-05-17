@@ -10,7 +10,9 @@ router.post("/register", (req, res) => {
   const user = Create({ username, password });
 
   user
-    .then((result) => res.status(201).send(`${result.username} created!`))
+    .then((result) =>
+      res.status(201).send(`${result.username} created! Please /login`)
+    )
     .catch((error) => {
       const errorJSON = JSON.parse(
         JSON.stringify(error, Object.getOwnPropertyNames(error))
@@ -26,11 +28,10 @@ router.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  const attemptLogin = Login({ username, password, session });
+  const attemptLogin = Login({ session, username, password });
 
   attemptLogin
     .then((result) => {
-      res.cookie("userId", result.id);
       res.status(result.status).json({ message: result.message });
     })
     .catch((error) => {
@@ -41,6 +42,8 @@ router.post("/login", (req, res) => {
         res.status(400).json({ message: "Invalid Password" });
       } else if (errorJSON.message === "401") {
         res.status(401).json({ message: `User ${username} does not exist` });
+      } else {
+        res.json(errorJSON);
       }
     });
 });
@@ -49,7 +52,7 @@ router.post("/login", (req, res) => {
 router.post("/logout", (req, res) => {
   const session = req.session;
 
-  Logout({session});
+  Logout({ session });
   res.json({ message: "You have succcessfully logged out." });
 });
 

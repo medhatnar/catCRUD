@@ -37,7 +37,7 @@ const upload = multer({
       cb(null, false);
       return new Error("Unsupported Media Type");
     }
-  }
+  },
 });
 
 // Cat API //
@@ -50,7 +50,7 @@ router.post("/cats", upload.single("media"), (req, res) => {
     res.status(415).json({ message: "Only Cat image files are allowed!" });
   } else {
     const cat = Create({ session, name, picPath: file.path });
-  
+
     cat
       .then((cat) => {
         res.status(200).sendFile(path.resolve(cat.media));
@@ -61,9 +61,7 @@ router.post("/cats", upload.single("media"), (req, res) => {
         });
         console.error(error);
       });
-
   }
-
 });
 
 router.get("/cats", async (_, res) => {

@@ -2,36 +2,48 @@
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const cors = require("cors");
 const db = require("./database/db");
 const authRoutes = require("./routes/auth");
 const catRoutes = require("./routes/cat");
-const cookieParser = require("cookie-parser");
+const removeUploadedFiles = require("multer/lib/remove-uploaded-files");
 
 // Initializations //;
 const app = express();
 const port = 3000;
-const oneDayInMM = 86400000;
 const corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "http://localhost:3000",
 };
+// session expires in 1 hour
+const sessionStore = new SequelizeStore({
+  db: db,
+  expiration: 3600000,
+});
 
 // Middleware //
-db.sync();
 app.use(cors(corsOptions));
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
+app.use(express.json({ limit: "50mb" }));
+app.use(
+  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 1000000 })
+);
 app.use(cookieParser());
 app.use(
   session({
-    secret: "737710n73cr3t",
+    name: "sid",
+    proxy: true,
+    resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: oneDayInMM },
-    resave: true,
-    rolling: true,
-    name: "userId"
+    secret: "73cr3t",
+    store: sessionStore,
   })
 );
+
+db.sync();
+sessionStore.sync();
+
+// Routes
 app.use("/auth", authRoutes);
 app.use("/api", catRoutes);
 
