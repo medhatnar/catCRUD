@@ -1,4 +1,5 @@
 // Modules //
+const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
@@ -56,6 +57,7 @@ router.post("/cats", upload.single("media"), (req, res) => {
         res.status(200).sendFile(path.resolve(cat.media));
       })
       .catch((error) => {
+        fs.rmSync(path.resolve(file.path));
         res.status(401).json({
           message: "You can NOT post Cat pics without logging in first!",
         });
@@ -129,11 +131,11 @@ router.get("/cats/:id", (req, res) => {
 
 router.put("/cats/:id", upload.single("media"), (req, res) => {
   const id = req.params.id;
-  const picPath = req.file.path;
+  const file = req.file;
   const session = req.session;
   const payload = req.body;
 
-  const updatedCat = Update({ id, picPath, session, payload });
+  const updatedCat = Update({ id, picPath: file.path, session, payload });
 
   updatedCat
     .then((cat) => {
@@ -142,6 +144,7 @@ router.put("/cats/:id", upload.single("media"), (req, res) => {
         .json({ name: cat.name, media: cat.media, user: cat.userId });
     })
     .catch((error) => {
+      fs.rmSync(path.resolve(file.path));
       const errorJSON = JSON.parse(
         JSON.stringify(error, Object.getOwnPropertyNames(error))
       );

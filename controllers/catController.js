@@ -65,7 +65,10 @@ const Update = async ({ id, picPath, session, payload }) => {
     if (session.userId !== cat.userId) {
       throw new Error("403");
     }
-    fs.rmSync(path.resolve(cat.media));
+    if (fs.existsSync(cat.media)) {
+      fs.rmSync(path.resolve(cat.media));
+    }
+
     return await cat.update(
       { media: picPath, ...payload },
       {
@@ -75,7 +78,7 @@ const Update = async ({ id, picPath, session, payload }) => {
       }
     );
   } else {
-    throw new Error("Cat does not exist!");
+    throw new Error("404");
   }
 };
 
@@ -88,7 +91,9 @@ const Delete = async ({ id, session }) => {
   if (session.userId !== cat.userId) {
     throw new Error("403");
   }
-  fs.rmSync(path.resolve(cat.media));
+  if (fs.existsSync(cat.media)) {
+    fs.rmSync(path.resolve(cat.media));
+  }
   await Cat.destroy({
     where: {
       id,
