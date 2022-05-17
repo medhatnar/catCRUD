@@ -21,6 +21,11 @@ cd codecademy
 or
 `yarn start`
 
+## Test
+
+`yarn test`
+
+
 ## API Reference
 
 ### Authentication endpoints:
@@ -90,11 +95,6 @@ example:
 ## Postman Demo
 
 ![2022-05-17 13 16 29](https://user-images.githubusercontent.com/16326269/168874078-085c1305-e657-42e8-8a5e-c0dce70c319b.gif)
-
-
-## Test
-
-`yarn test`
 
 ## Created by
 
