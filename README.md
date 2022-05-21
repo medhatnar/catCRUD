@@ -5,7 +5,7 @@
 ### Installation
 
 ```
-git clone https://github.com/medhatnar/codecatemy.git
+git clone https://github.com/medhatnar/catCRUD.git
 cd codecademy
 ```
 **Install dependencies**:
