@@ -6,7 +6,7 @@
 
 ```
 git clone https://github.com/medhatnar/catCRUD.git
-cd codecademy
+cd catCRUD
 ```
 **Install dependencies**:
 
