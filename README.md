@@ -1,4 +1,4 @@
-# codecatemy cat pic uploader 🐈 🖼️
+# cat pic uploader 🐈 🖼️
 
 ## Documentation
 
