@@ -95,11 +95,3 @@ example:
 ## Postman Demo
 
 ![2022-05-17 13 16 29](https://user-images.githubusercontent.com/16326269/168874078-085c1305-e657-42e8-8a5e-c0dce70c319b.gif)
-
-## Created by
-
-<table>
-<tr>
-<td align="center"><a href="https://github.com/narmander"><img src="https://avatars0.githubusercontent.com/u/16326269?s=400&v=4" width="200px;" alt="Picture of Nar Shah"/><br /><b>Nar Shah</b></a></td>
-</tr>
-</table>
